@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
-    boolean courseexist(String code);
+    boolean existsByCode(String code);
 
 }
 

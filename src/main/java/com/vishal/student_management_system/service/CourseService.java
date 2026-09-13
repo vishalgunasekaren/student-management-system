@@ -19,7 +19,7 @@ public class CourseService {
     }
 
     public Course addCourse(Course c){
-        boolean courseexist = courseRepository.courseexist(c.getCode());
+        boolean courseexist = courseRepository.existsByCode(c.getCode());
 
         if(courseexist){
             throw new IllegalArgumentException("Course is already exists with this code");

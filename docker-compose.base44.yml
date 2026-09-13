@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: studentdb
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: student
+      MYSQL_PASSWORD: studentpass
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    image: maven:3.9-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    ports:
+      - "3000:3000"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/studentdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=student
+      - SPRING_DATASOURCE_PASSWORD=studentpass
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SERVER_PORT=3000
+    depends_on:
+      db:
+        condition: service_healthy
+    command: mvn spring-boot:run -DskipTests
+
+volumes:
+  db_data:
+  maven_cache:
