@@ -1,23 +1,22 @@
-package com.vishal.student_management_system.entity;
+package com.vishal.student_management_system.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
-import org.hibernate.Length;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@Table(name = "students")
-@AllArgsConstructor
+@AllArgsConstructor //@AllArgsConstructor generates a constructor for every field(field mean like name, email,  id etc.:
 @Builder
-@Entity
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+public class StudentRequest {
     @NotBlank(message = "FirstName is Required")
     @Column(nullable = false,length = 100)
     private String firstName;
@@ -45,6 +44,5 @@ public class Student {
     @Column(nullable = false)
     private LocalDate enrollmentDate;
 
+
 }
-
-

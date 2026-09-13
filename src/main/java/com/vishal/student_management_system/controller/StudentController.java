@@ -1,62 +1,61 @@
 package com.vishal.student_management_system.controller;
 
 import com.vishal.student_management_system.service.StudentService;
+import com.vishal.student_management_system.dto.StudentRequest;
+import com.vishal.student_management_system.dto.StudentResponse;
 import com.vishal.student_management_system.entity.Student;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/students")
+@RequiredArgsConstructor // generates a constructor for required fields only—here, only the final field:
 public class StudentController {
 
    private final StudentService studentService;
 
-// Constructor Injection
-   public StudentController(StudentService service){
-       this.studentService = service;
-   }
-
 
 // Methods
    @PostMapping()
-    public Student addStudent( @Valid @RequestBody Student s){
-       return studentService.addStudent(s);
+    public ResponseEntity<StudentResponse> createStudent(@Valid @RequestBody StudentRequest request){
+       return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(request));
+
+
 
    }
 
-   @GetMapping()
-    public List<Student> getALlStudents(){
-       return studentService.getStudents();
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentResponse> getStudent(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudentById(id));
+    }
 
-   }
+    @GetMapping
+    public ResponseEntity<List<StudentResponse>> getAllStudents() {
+        return ResponseEntity.ok(studentService.getAllStudents());
+    }
 
-   @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable int id){
-       return studentService.getStudentById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<StudentResponse> updateStudent(@PathVariable Long id,
+                                                         @Valid @RequestBody StudentRequest request) {
+        return ResponseEntity.ok(studentService.updateStudent(id, request));
+    }
 
-   }
-
-   @PutMapping("/{id}")
-    public Student updateStudentById(@PathVariable int id, @Valid @RequestBody Student s){
-
-       return studentService.updateStudentById(id, s);
-
-   }
-
-   @DeleteMapping("/{id}")
-    public String deleteById(@PathVariable int id){
-       studentService.deleteStudentById(id);
-
-       return "Student Deleted Successfully";
-
-   }
-
-
-
-
-
-
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+        return ResponseEntity.noContent().build();
+    }
 }
+
+
+
+
+
+
+
+
